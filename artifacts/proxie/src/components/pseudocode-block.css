@@ -1,0 +1,16 @@
+.pseudocode-block { min-width:0; max-width:100%; margin:12px 0; border:1px solid hsl(var(--pen-blue) / .22); border-radius:12px; background:hsl(45 50% 97%); overflow:hidden; font-style:normal; color:hsl(var(--ink)); }
+.pseudocode-block figcaption { padding:9px 14px; border-bottom:1px solid hsl(var(--pen-blue) / .15); background:hsl(var(--pen-blue) / .055); color:hsl(var(--pen-blue)); font:600 10px/1.5 "JetBrains Mono",monospace; letter-spacing:.08em; text-transform:uppercase; }
+.pseudocode-block pre { max-width:100%; margin:0; padding:14px 0; overflow-x:auto; white-space:pre; tab-size:2; font:13px/1.85 "JetBrains Mono",monospace; font-variant-ligatures:none; text-align:left; }
+.pseudocode-block pre:focus-visible { outline:2px solid hsl(var(--pen-blue)); outline-offset:-3px; }
+.pseudocode-block code { display:block; min-width:100%; width:max-content; font:inherit; }
+.pseudocode-line { display:grid; grid-template-columns:3.5em 1fr; padding-right:18px; }
+.pseudocode-number { user-select:none; color:hsl(var(--muted-foreground)); text-align:right; padding-right:1.2em; }
+.pseudocode-keyword { font-weight:700; color:hsl(var(--pen-blue)); }
+.pseudocode-original { padding:9px 14px; border-top:1px dashed hsl(var(--pen-blue) / .2); font:11px/1.6 "Atkinson Hyperlegible",sans-serif; color:hsl(var(--muted-foreground)); }
+.pseudocode-original summary { cursor:pointer; font-weight:700; }
+.pseudocode-original p { margin-top:7px; }
+.pseudocode-original pre { padding:10px 0 0; font-size:11px; }
+@media (max-width:640px) {
+  .pseudocode-block pre { font-size:12px; }
+  .pseudocode-line { grid-template-columns:2.8em 1fr; }
+}

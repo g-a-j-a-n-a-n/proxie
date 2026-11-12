@@ -4,6 +4,8 @@ import { ExternalLink, FileText, Flag as FlagIcon, Hash, PencilLine, RefreshCw, 
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { findSourcePage, sourceUrl } from "@/lib/proxie";
 import { cn } from "@/lib/utils";
+import { formatNoteText } from "@/lib/pseudocode";
+import { PseudocodeBlock } from "@/components/pseudocode-block";
 
 /* ---------- Source viewer ---------- */
 
@@ -152,14 +154,16 @@ export function sectionStatusLabel(status: string): { label: string; cls: string
 
 function StatementLine({ st, terms, onCite, onFlag, children }: { st: Statement; terms: string[]; onCite: (c: Citation) => void; onFlag: (st: Statement) => void; children?: ReactNode }) {
   return (
-    <span className="group/st">
+    <div className="group/st min-w-0">
       {children}
-      <Highlighted text={st.text} terms={terms} />
+      {formatNoteText(st.text).map((block, i) => block.kind === "code"
+        ? <PseudocodeBlock key={i} block={block} />
+        : <span className="whitespace-pre-wrap" key={i}><Highlighted text={block.text} terms={terms} /></span>)}
       <Cite c={st.citation} onOpen={onCite} />
       <button type="button" onClick={() => onFlag(st)} className="ml-1 inline-flex translate-y-[2px] items-center rounded p-0.5 text-[hsl(var(--muted-foreground))] opacity-60 transition-opacity hover:text-[hsl(var(--pen-red))] focus:opacity-100 md:opacity-0 md:group-hover/st:opacity-100" aria-label="Flag this sentence" data-testid="button-flag-statement">
         <FlagIcon className="h-3.5 w-3.5" />
       </button>
-    </span>
+    </div>
   );
 }
 
@@ -183,16 +187,16 @@ export function SectionBlock({ section, index, flags, onCite, onFlag, onEdit, on
         </h2>
         {status && <span className={cn("mt-2 rounded-full px-2.5 py-0.5 text-[11px] font-bold", status.cls)} data-testid={`status-section-${section.id}`}>{status.label}</span>}
       </div>
-      <p className="mt-3 text-[16.5px] italic leading-8 text-[hsl(var(--ink)/0.85)]">
+      <div className="mt-3 text-[16.5px] italic leading-8 text-[hsl(var(--ink)/0.85)]">
         <StatementLine st={section.summary} terms={[]} onCite={onCite} onFlag={flag} />
-      </p>
+      </div>
 
-      <div className="mt-4 grid gap-6 lg:grid-cols-[1fr_minmax(0,260px)]">
-        <ol className="space-y-1">
+      <div className={cn("mt-4 grid min-w-0 gap-6", section.diagram.length > 0 && "lg:grid-cols-[minmax(0,1fr)_minmax(0,260px)]")}>
+        <ol className="min-w-0 space-y-1">
           {section.points.map((p, i) => (
             <li key={i} className="flex gap-3 text-[16px] leading-8">
               <span className="hand mt-[1px] w-5 shrink-0 text-2xl font-bold text-[hsl(var(--pen-blue))]">{i + 1}.</span>
-              <span><StatementLine st={p} terms={termNames} onCite={onCite} onFlag={flag} /></span>
+              <div className="min-w-0 flex-1"><StatementLine st={p} terms={termNames} onCite={onCite} onFlag={flag} /></div>
             </li>
           ))}
           {section.points.length === 0 && <li className="text-sm text-[hsl(var(--muted-foreground))]">No main points could be tied to your sources for this section.</li>}
