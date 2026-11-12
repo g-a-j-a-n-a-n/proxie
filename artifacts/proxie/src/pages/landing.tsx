@@ -2,6 +2,7 @@ import { Link } from "wouter";
 import { ArrowRight, Check, FileText, Flag, Lock, MicOff, Network, Quote, Undo2 } from "lucide-react";
 import { Logo } from "@/components/app-shell";
 import { Highlighted } from "@/components/notebook-parts";
+import { LandingFeatureShowcase } from "@/components/landing-feature-showcase";
 
 const EX_POINTS = [
   "Yeast eats sugar: it breaks glucose down without oxygen and releases carbon dioxide and ethanol.",
@@ -108,6 +109,8 @@ export default function Landing() {
           </div>
         </div>
       </section>
+
+      <LandingFeatureShowcase />
 
       {/* Honesty grid */}
       <section className="mx-auto max-w-6xl px-5 py-24">

@@ -20,6 +20,12 @@ The approved visual direction for course skill trees is a game-like honeycomb ma
 
 **How to apply:** Keep future skill-tree work consistent with this direction while using real, source-backed learning progress rather than the prototype's simulated quiz rules.
 
+The user likes the front page's existing overview and explanation of Proxie's purpose. Error flagging and the honeycomb skill tree are important differentiators to emphasize alongside it.
+
+**Why:** The user explicitly praised the overview and asked to showcase these two features to emphasize the app's uniqueness.
+
+**How to apply:** Preserve the purpose-led introduction when extending the front page; make source-checking and visual learning progress understandable without implying automatic error correction or guaranteed mastery.
+
 Do not replace private App Storage with persistent local PDF files or database blobs to work around transient provisioning failures.
 
 **Why:** Initial managed storage provisioning returned internal errors twice, then succeeded when retried after independent implementation work.
