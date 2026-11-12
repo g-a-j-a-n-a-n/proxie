@@ -1,6 +1,7 @@
 import app from "./app";
 import { logger } from "./lib/logger";
 import { recoverInterruptedRuns } from "./lib/study-store";
+import { ensureJudgeDemo } from "./lib/judge-demo";
 
 const rawPort = process.env["PORT"];
 
@@ -17,6 +18,11 @@ if (Number.isNaN(port) || port <= 0) {
 }
 
 await recoverInterruptedRuns();
+try {
+  await ensureJudgeDemo();
+} catch (error) {
+  logger.error({ err: error }, "Could not initialize the development judge account");
+}
 app.listen(port, (err) => {
   if (err) {
     logger.error({ err }, "Error listening on port");

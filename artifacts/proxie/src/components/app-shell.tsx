@@ -1,6 +1,7 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { Link, useLocation } from "wouter";
 import { useClerk, useUser } from "@clerk/react";
+import { useQueryClient } from "@tanstack/react-query";
 import { BookOpen, LayoutGrid, LogOut, Network, PenLine, Sprout } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { basePath } from "@/lib/proxie";
@@ -26,12 +27,44 @@ export function AppShell({ children }: { children: ReactNode }) {
   const [location] = useLocation();
   const { user } = useUser();
   const { signOut } = useClerk();
+  const queryClient = useQueryClient();
+  const [resetting, setResetting] = useState(false);
+  const [demoError, setDemoError] = useState("");
+  const isJudge = user?.publicMetadata?.isProxieJudge === true;
   const name = user?.firstName || user?.primaryEmailAddress?.emailAddress?.split("@")[0] || "you";
   const initials = (user?.firstName?.[0] ?? name[0] ?? "P").toUpperCase() + (user?.lastName?.[0] ?? "").toUpperCase();
   const active = (href: string) => location === href || (href !== "/dashboard" && href !== "/notebooks/new" && location.startsWith(href));
 
   return (
     <div className="min-h-[100dvh] pb-20 md:pb-0">
+      {isJudge && (
+        <div className="border-b-2 border-[hsl(var(--hl-yellow))] bg-[hsl(var(--hl-yellow)/0.38)] px-4 py-3">
+          <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 md:px-2">
+            <p className="max-w-3xl text-sm font-semibold text-[hsl(var(--ink))]">
+              <b>Shared judge account:</b> every visitor sees and can change this fictional sample workspace. Never upload personal or real student materials.
+              {demoError && <span role="alert" className="ml-2 text-[hsl(var(--destructive))]">{demoError}</span>}
+            </p>
+            <button type="button" disabled={resetting} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[hsl(var(--ink)/0.3)] bg-[hsl(var(--background))] px-4 py-2 text-sm font-bold disabled:opacity-60"
+              onClick={async () => {
+                if (!window.confirm("Reset the shared judge workspace? This removes every judge’s changes and restores the fictional sample notebook and course.")) return;
+                setResetting(true); setDemoError("");
+                try {
+                  const response = await fetch(`${basePath}/api/demo/reset`, { method: "POST", credentials: "same-origin" });
+                  if (!response.ok) {
+                    const data = await response.json().catch(() => ({}));
+                    throw new Error(data.error || "The shared workspace could not be reset.");
+                  }
+                  await queryClient.invalidateQueries();
+                } catch (error) {
+                  setDemoError(error instanceof Error ? error.message : "The shared workspace could not be reset.");
+                } finally { setResetting(false); }
+              }}
+              data-testid="button-reset-judge-demo">
+              {resetting ? "Restoring sample…" : "Reset shared demo"}
+            </button>
+          </div>
+        </div>
+      )}
       <header className="sticky top-0 z-40 border-b border-[hsl(var(--border))] bg-[hsl(var(--background)/0.88)] backdrop-blur">
         <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4 md:px-6">
           <Link href="/dashboard" data-testid="link-home"><Logo /></Link>

@@ -31,6 +31,7 @@ import type {
   CourseUpdate,
   FlagInput,
   HealthStatus,
+  JudgeTicket,
   Notebook,
   NotebookInput,
   Preferences,
@@ -258,6 +259,80 @@ export function useGetWorkspace<TData = Awaited<ReturnType<typeof getWorkspace>>
 
 
 
+
+export const getCreateJudgeTicketUrl = () => {
+
+
+
+
+  return `/api/demo/judge-ticket`
+}
+
+/**
+ * @summary Create a short-lived sign-in ticket for the shared development judge workspace
+ */
+export const createJudgeTicket = async ( options?: Parameters<typeof customFetch>[1]): Promise<JudgeTicket> => {
+
+  return customFetch<JudgeTicket>(getCreateJudgeTicketUrl(),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+
+export const getCreateJudgeTicketMutationKey = () => ['createJudgeTicket'] as const;
+
+export const getCreateJudgeTicketMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createJudgeTicket>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createJudgeTicket>>, TError,void, TContext> => {
+
+const mutationKey = getCreateJudgeTicketMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createJudgeTicket>>, void> = () => {
+
+
+          return  createJudgeTicket(requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateJudgeTicketMutationResult = NonNullable<Awaited<ReturnType<typeof createJudgeTicket>>>
+
+    export type CreateJudgeTicketMutationError = ErrorType<void>
+
+
+    /**
+ * @summary Create a short-lived sign-in ticket for the shared development judge workspace
+ */
+export const useCreateJudgeTicket = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createJudgeTicket>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof createJudgeTicket>>,
+        TError,
+        void,
+        TContext
+      > => {
+      return useMutation(getCreateJudgeTicketMutationOptions(options), queryClient);
+    }
 
 export const getBuildNotebookUrl = () => {
 

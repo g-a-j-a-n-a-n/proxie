@@ -23,6 +23,17 @@ paths:
           content:
             application/json:
               schema: { $ref: "#/components/schemas/Workspace" }
+  /demo/judge-ticket:
+    post:
+      operationId: createJudgeTicket
+      summary: Create a short-lived sign-in ticket for the shared development judge workspace
+      responses:
+        "200":
+          description: Single-use Clerk sign-in ticket, only available in development
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/JudgeTicket" }
+        "404": { description: Not available outside development }
   /notebooks:
     post:
       operationId: buildNotebook
@@ -406,6 +417,11 @@ components:
         badges: { type: array, items: { type: string } }
         preferences: { $ref: "#/components/schemas/Preferences" }
         quests: { type: array, items: { $ref: "#/components/schemas/Quest" } }
+    JudgeTicket:
+      type: object
+      required: [ticket]
+      properties:
+        ticket: { type: string }
     Quest:
       type: object
       required: [courseId, topicId, title, reason]

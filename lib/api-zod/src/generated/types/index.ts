@@ -14,6 +14,7 @@ export * from './courseUpdate';
 export * from './flag';
 export * from './flagInput';
 export * from './healthStatus';
+export * from './judgeTicket';
 export * from './notebook';
 export * from './notebookInput';
 export * from './preferences';

@@ -284,3 +284,7 @@ export interface Workspace {
   quests: Quest[];
 }
 
+export interface JudgeTicket {
+  ticket: string;
+}
+

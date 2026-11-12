@@ -6,6 +6,7 @@ import * as api from "@workspace/api-zod";
 import { addEvent, changeState, fail, publicWorkspace, readState, type Course, type Run, type State } from "../lib/study-store";
 import { courseFromSections, generateNotes, runNotebook, transcriptSource, validCitation } from "../lib/study-generation";
 import { ObjectStorageService } from "../lib/objectStorage";
+import { judgeUserId, seedJudgeWorkspace } from "../lib/judge-demo";
 
 const router: IRouter = Router();
 const storage = new ObjectStorageService();
@@ -28,6 +29,11 @@ router.use((req: Request, res: Response, next: NextFunction) => {
 
 router.get("/workspace", async (req, res): Promise<void> => {
   res.json(publicWorkspace(await readState(user(req))));
+});
+router.post("/demo/reset", async (req, res): Promise<void> => {
+  if (process.env.NODE_ENV !== "development" || user(req) !== judgeUserId) fail("This action is only available in the shared development judge account.", 404);
+  await seedJudgeWorkspace(user(req));
+  res.json({ reset: true });
 });
 router.get("/notebooks/:id", async (req, res): Promise<void> => {
   res.json(api.GetNotebookResponse.parse(notebook(await readState(user(req)), id(req))));

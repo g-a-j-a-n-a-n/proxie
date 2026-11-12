@@ -145,6 +145,14 @@ export const GetWorkspaceResponse = zod.object({
 })
 
 
+/**
+ * @summary Create a short-lived sign-in ticket for the shared development judge workspace
+ */
+export const CreateJudgeTicketResponse = zod.object({
+  "ticket": zod.string()
+})
+
+
 export const buildNotebookBodyTitleMax = 160;
 
 export const buildNotebookBodyTranscriptMax = 120000;

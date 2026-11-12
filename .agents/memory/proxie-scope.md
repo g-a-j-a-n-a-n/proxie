@@ -2,11 +2,11 @@
 name: Proxie product scope
 description: User decisions and priorities for Proxie that future work should preserve.
 ---
-Proxie requires private student accounts, not a shared single-user demo.
+The student product requires private per-student accounts; the user also approved one shared, editable judge demo in development only.
 
-**Why:** The user explicitly chose “Private student accounts” when asked about first-version access.
+**Why:** The user chose private student accounts for normal use, then explicitly chose a shared workspace so judges can quickly try features.
 
-**How to apply:** Keep students' uploaded materials, notebooks, and learning progress separated by authenticated identity.
+**How to apply:** Keep normal student materials and progress separated by authenticated identity. Keep judge access dev-only, label it as shared, seed fictional content, and never put real student materials there.
 
 The attached product plan treats course setup, quizzes/levels, and the skill tree as core. If scope must be reduced, cut decorative notebook styling and badges before these capabilities. Proxie only uses materials students already have permission to access and does not record live lectures.
 

@@ -8,6 +8,7 @@ import { ErrorBoundary } from "@/components/error-boundary";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppShell, Logo } from "@/components/app-shell";
+import { JudgeDemoButton } from "@/components/judge-demo-button";
 import NotFound from "@/pages/not-found";
 import Landing from "@/pages/landing";
 import Dashboard from "@/pages/dashboard";
@@ -96,6 +97,7 @@ function AuthFrame({ children, note }: { children: ReactNode; note: string }) {
   return (
     <div className="paper-grid flex min-h-[100dvh] flex-col items-center justify-center gap-6 px-4 py-10">
       <Link href="/" data-testid="link-auth-home"><Logo /></Link>
+      {import.meta.env.DEV && <div className="w-full max-w-[440px]"><JudgeDemoButton /></div>}
       {children}
       <p className="hand max-w-xs rotate-[-1deg] text-center text-2xl text-[hsl(var(--ink)/0.7)]">{note}</p>
     </div>
