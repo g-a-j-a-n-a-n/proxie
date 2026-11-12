@@ -1,36 +1,416 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
 servers:
   - url: /api
-    description: Base API path
-tags:
-  - name: health
-    description: Health operations
 paths:
   /healthz:
     get:
       operationId: healthCheck
-      tags: [health]
-      summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
           content:
             application/json:
+              schema: { $ref: "#/components/schemas/HealthStatus" }
+  /workspace:
+    get:
+      operationId: getWorkspace
+      responses:
+        "200":
+          description: Private student workspace
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Workspace" }
+  /notebooks:
+    post:
+      operationId: buildNotebook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/NotebookInput" }
+      responses:
+        "202":
+          description: Build started
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Run" }
+  /notebooks/{id}:
+    parameters:
+      - { name: id, in: path, required: true, schema: { type: string } }
+    get:
+      operationId: getNotebook
+      responses:
+        "200":
+          description: Notebook
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Notebook" }
+    delete:
+      operationId: deleteNotebook
+      responses:
+        "204": { description: Deleted }
+  /notebooks/{id}/sections/{sectionId}:
+    parameters:
+      - { name: id, in: path, required: true, schema: { type: string } }
+      - { name: sectionId, in: path, required: true, schema: { type: string } }
+    patch:
+      operationId: fixSection
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/SectionFix" }
+      responses:
+        "200":
+          description: Updated notebook
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Notebook" }
+  /notebooks/{id}/flags:
+    parameters:
+      - { name: id, in: path, required: true, schema: { type: string } }
+    post:
+      operationId: flagContent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/FlagInput" }
+      responses:
+        "200":
+          description: Flag saved
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Notebook" }
+  /runs/{id}:
+    parameters:
+      - { name: id, in: path, required: true, schema: { type: string } }
+    get:
+      operationId: getRun
+      responses:
+        "200":
+          description: Run events for live progress and replay
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Run" }
+  /courses:
+    post:
+      operationId: createCourse
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CourseInput" }
+      responses:
+        "201":
+          description: Course extracted from syllabus
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Course" }
+  /courses/{id}:
+    parameters:
+      - { name: id, in: path, required: true, schema: { type: string } }
+    patch:
+      operationId: updateCourse
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CourseUpdate" }
+      responses:
+        "200":
+          description: Updated course
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Course" }
+    delete:
+      operationId: deleteCourse
+      responses:
+        "204": { description: Deleted }
+  /courses/{id}/quiz:
+    parameters:
+      - { name: id, in: path, required: true, schema: { type: string } }
+    get:
+      operationId: getQuiz
+      responses:
+        "200":
+          description: Source-backed review or placement quiz
+          content:
+            application/json:
               schema:
-                $ref: "#/components/schemas/HealthStatus"
+                type: array
+                items: { $ref: "#/components/schemas/Question" }
+  /answers:
+    post:
+      operationId: submitAnswer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/AnswerInput" }
+      responses:
+        "200":
+          description: Feedback and earned XP
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AnswerResult" }
+  /preferences:
+    patch:
+      operationId: updatePreferences
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/Preferences" }
+      responses:
+        "200":
+          description: Preferences saved
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Preferences" }
+  /storage/uploads/request-url:
+    post:
+      operationId: requestUploadUrl
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/UploadInput" }
+      responses:
+        "200":
+          description: Private PDF upload URL
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/UploadResult" }
 components:
   schemas:
     HealthStatus:
       type: object
+      required: [status]
       properties:
-        status:
-          type: string
-      required:
-        - status
-
+        status: { type: string }
+    Citation:
+      type: object
+      required: [sourceId, locator, quote]
+      properties:
+        sourceId: { type: string }
+        locator: { type: string }
+        quote: { type: string }
+    Statement:
+      type: object
+      required: [text, citation]
+      properties:
+        text: { type: string }
+        citation: { $ref: "#/components/schemas/Citation" }
+    Term:
+      type: object
+      required: [term, definition, example, citation]
+      properties:
+        term: { type: string }
+        definition: { type: string }
+        example: { type: string }
+        citation: { $ref: "#/components/schemas/Citation" }
+    Section:
+      type: object
+      required: [id, title, summary, points, terms, status, diagram]
+      properties:
+        id: { type: string }
+        title: { type: string }
+        summary: { $ref: "#/components/schemas/Statement" }
+        points: { type: array, items: { $ref: "#/components/schemas/Statement" } }
+        terms: { type: array, items: { $ref: "#/components/schemas/Term" } }
+        diagram: { type: array, items: { $ref: "#/components/schemas/Statement" } }
+        status: { type: string }
+    Source:
+      type: object
+      required: [id, name, type, pages]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        type: { type: string, enum: [pdf, transcript] }
+        objectPath: { type: string }
+        pages:
+          type: array
+          items: { $ref: "#/components/schemas/SourcePage" }
+    SourcePage:
+      type: object
+      required: [locator, text]
+      properties:
+        locator: { type: string }
+        text: { type: string }
+    Flag:
+      type: object
+      required: [id, sectionId, highlightedText, citation, note, status]
+      properties:
+        id: { type: string }
+        sectionId: { type: string }
+        highlightedText: { type: string }
+        citation: { $ref: "#/components/schemas/Citation" }
+        note: { type: string }
+        status: { type: string }
+        before: { type: string }
+        after: { type: string }
+    Notebook:
+      type: object
+      required: [id, title, courseId, createdAt, sections, sources, flags, runId, disclaimer]
+      properties:
+        id: { type: string }
+        title: { type: string }
+        courseId: { type: string }
+        createdAt: { type: string }
+        sections: { type: array, items: { $ref: "#/components/schemas/Section" } }
+        sources: { type: array, items: { $ref: "#/components/schemas/Source" } }
+        flags: { type: array, items: { $ref: "#/components/schemas/Flag" } }
+        runId: { type: string }
+        disclaimer: { type: string }
+    NotebookInput:
+      type: object
+      required: [title, consent]
+      properties:
+        title: { type: string, minLength: 1, maxLength: 160 }
+        courseId: { type: string }
+        transcript: { type: string, maxLength: 120000 }
+        objectPath: { type: string }
+        filename: { type: string }
+        sourceIds: { type: array, items: { type: string } }
+        consent: { type: boolean }
+    SectionFix:
+      type: object
+      required: [action]
+      properties:
+        action: { type: string, enum: [edit, regenerate] }
+        text: { type: string, maxLength: 12000 }
+        flagId: { type: string }
+    FlagInput:
+      type: object
+      required: [sectionId, highlightedText, citation, note]
+      properties:
+        sectionId: { type: string }
+        highlightedText: { type: string, maxLength: 12000 }
+        citation: { $ref: "#/components/schemas/Citation" }
+        note: { type: string, maxLength: 2000 }
+    RunEvent:
+      type: object
+      required: [step, status, durationMs, result, startedAt]
+      properties:
+        step: { type: string }
+        status: { type: string, enum: [ok, failed, recovered] }
+        durationMs: { type: number }
+        result: { type: string }
+        startedAt: { type: string }
+    Run:
+      type: object
+      required: [id, status, events]
+      properties:
+        id: { type: string }
+        status: { type: string, enum: [running, complete, failed] }
+        notebookId: { type: string }
+        error: { type: string }
+        events: { type: array, items: { $ref: "#/components/schemas/RunEvent" } }
+    Topic:
+      type: object
+      required: [id, name, position, level, citation, prerequisites, correctSessions, lastReviewedAt]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        position: { type: integer }
+        level: { type: string, enum: [Locked, Unlocked, Practicing, Mastered] }
+        citation: { $ref: "#/components/schemas/Citation" }
+        prerequisites: { type: array, items: { type: string } }
+        correctSessions: { type: integer }
+        lastReviewedAt: { type: ["string", "null"] }
+    Course:
+      type: object
+      required: [id, name, color, topics, answerCount, xp, placementDone, sources, runId]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        color: { type: string }
+        topics: { type: array, items: { $ref: "#/components/schemas/Topic" } }
+        answerCount: { type: integer }
+        xp: { type: integer }
+        placementDone: { type: boolean }
+        sources: { type: array, items: { $ref: "#/components/schemas/Source" } }
+        runId: { type: string }
+    CourseInput:
+      type: object
+      required: [name, syllabus]
+      properties:
+        name: { type: string, minLength: 1, maxLength: 120 }
+        syllabus: { type: string, minLength: 10, maxLength: 120000 }
+        color: { type: string }
+    CourseUpdate:
+      type: object
+      properties:
+        name: { type: string, minLength: 1, maxLength: 120 }
+        topics: { type: array, items: { $ref: "#/components/schemas/Topic" } }
+        mergeFromId: { type: string }
+        mergeIntoId: { type: string }
+    Question:
+      type: object
+      required: [id, courseId, topicId, text, options, difficulty, citation]
+      properties:
+        id: { type: string }
+        courseId: { type: string }
+        topicId: { type: string }
+        text: { type: string }
+        options: { type: array, items: { type: string } }
+        difficulty: { type: integer }
+        citation: { $ref: "#/components/schemas/Citation" }
+    AnswerInput:
+      type: object
+      required: [questionId, option, placement]
+      properties:
+        questionId: { type: string }
+        option: { type: integer, minimum: 0, maximum: 3 }
+        placement: { type: boolean }
+    AnswerResult:
+      type: object
+      required: [correct, correctOption, explanation, xpEarned, course]
+      properties:
+        correct: { type: boolean }
+        correctOption: { type: integer }
+        explanation: { type: string }
+        xpEarned: { type: integer }
+        course: { $ref: "#/components/schemas/Course" }
+    Preferences:
+      type: object
+      required: [streakPaused]
+      properties:
+        streakPaused: { type: boolean }
+    UploadInput:
+      type: object
+      required: [name, size, contentType]
+      properties:
+        name: { type: string }
+        size: { type: integer, maximum: 15728640, minimum: 1 }
+        contentType: { type: string, enum: [application/pdf] }
+    UploadResult:
+      type: object
+      required: [uploadURL, objectPath]
+      properties:
+        uploadURL: { type: string }
+        objectPath: { type: string }
+    Workspace:
+      type: object
+      required: [notebooks, courses, runs, xp, streak, badges, preferences, quests]
+      properties:
+        notebooks: { type: array, items: { $ref: "#/components/schemas/Notebook" } }
+        courses: { type: array, items: { $ref: "#/components/schemas/Course" } }
+        runs: { type: array, items: { $ref: "#/components/schemas/Run" } }
+        xp: { type: integer }
+        streak: { type: integer }
+        badges: { type: array, items: { type: string } }
+        preferences: { $ref: "#/components/schemas/Preferences" }
+        quests: { type: array, items: { $ref: "#/components/schemas/Quest" } }
+    Quest:
+      type: object
+      required: [courseId, topicId, title, reason]
+      properties:
+        courseId: { type: string }
+        topicId: { type: string }
+        title: { type: string }
+        reason: { type: string }

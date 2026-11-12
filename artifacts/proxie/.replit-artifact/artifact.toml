@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Proxie"
+description = "A private study companion that turns lecture slides and transcripts into cited notebooks, quizzes, and course skill trees."
+version = "1.0.0"
+id = "artifacts/proxie"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 21337
+
+[services.development]
+run = "pnpm --filter @workspace/proxie run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/proxie", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/proxie/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "21337"
+BASE_PATH = "/"

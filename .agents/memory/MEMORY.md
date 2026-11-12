@@ -1,0 +1,1 @@
+- [Proxie product scope](proxie-scope.md) — private student accounts and cited course progression are explicit requirements.
