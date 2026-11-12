@@ -1,1 +1,2 @@
 - [Proxie product scope](proxie-scope.md) — private student accounts and cited course progression are explicit requirements.
+- [Shared dependency validation](shared-dependency-validation.md) — major type-library updates can leave stale incremental declarations; rebuild before weakening types.

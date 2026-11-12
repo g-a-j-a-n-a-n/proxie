@@ -7,6 +7,7 @@ import { addEvent, changeState, fail, publicWorkspace, readState, type Course, t
 import { courseFromSections, generateNotes, runNotebook, transcriptSource, validCitation } from "../lib/study-generation";
 import { ObjectStorageService } from "../lib/objectStorage";
 import { judgeUserId, seedJudgeWorkspace } from "../lib/judge-demo";
+import { consumeGenerationBudget } from "../lib/generation-usage";
 
 const storage = new ObjectStorageService();
 type UserIdResolver = (req: Request) => string | null | undefined;
@@ -51,6 +52,7 @@ router.post("/notebooks", async (req, res): Promise<void> => {
   await changeState(user(req), s => {
     if (s.runs.some(r => r.status === "running")) fail("A notebook is already building. Wait for it to finish.");
     if (input.courseId) course(s, input.courseId);
+    s.generationUsage = consumeGenerationBudget(s.generationUsage);
     s.runs.unshift(run);
   });
   await addEvent(user(req), run.id, "Page", "Student submitted materials and confirmed access permission");
@@ -91,6 +93,7 @@ router.patch("/notebooks/:id/sections/:sectionId", async (req, res): Promise<voi
   const existing = n.sections.find(s => s.id === sectionId) || fail("Section not found.", 404);
   let replacement = structuredClone(existing);
   if (input.action === "regenerate") {
+    await changeState(user(req), s => { s.generationUsage = consumeGenerationBudget(s.generationUsage); });
     const sourceIds = new Set([existing.summary.citation.sourceId, ...existing.points.map(p => p.citation.sourceId)]);
     const locators = new Set([existing.summary.citation.locator, ...existing.points.map(p => p.citation.locator)]);
     const sources = n.sources.filter(s => sourceIds.has(s.id)).map(s => ({ ...s, pages: s.pages.filter(p => locators.has(p.locator)) }));
@@ -126,7 +129,11 @@ router.post("/courses", async (req, res): Promise<void> => {
   if (!input.name.trim()) fail("Enter a course name.");
   const source = transcriptSource(input.syllabus, `${input.name} syllabus`);
   const run: Run = { id: randomUUID(), status: "running", events: [] };
-  await changeState(user(req), s => { if (s.runs.some(r => r.status === "running")) fail("Wait for your current build to finish."); s.runs.unshift(run); });
+  await changeState(user(req), s => {
+    if (s.runs.some(r => r.status === "running")) fail("Wait for your current build to finish.");
+    s.generationUsage = consumeGenerationBudget(s.generationUsage);
+    s.runs.unshift(run);
+  });
   try {
     await addEvent(user(req), run.id, "Page", "Student submitted a course syllabus");
     await addEvent(user(req), run.id, "Topic extraction", `Extracted ${Math.min(source.pages.length, 30)} ordered syllabus topics with line citations`);

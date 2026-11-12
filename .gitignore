@@ -53,3 +53,16 @@ Thumbs.db
 # Replit
 .cache/
 .local/
+
+# Local credentials and private operational data
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.sql
+*.dump
+/backups/
+/generated-artifacts/

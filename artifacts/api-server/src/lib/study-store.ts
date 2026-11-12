@@ -2,6 +2,7 @@ import { db, studentWorkspaces } from "@workspace/db";
 import { eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import { GetWorkspaceResponse, GetNotebookResponse, CreateCourseResponse, GetRunResponse, GetQuizResponseItem } from "@workspace/api-zod";
+import type { GenerationUsage } from "./generation-usage";
 
 export type Notebook = z.infer<typeof GetNotebookResponse>;
 export type Course = z.infer<typeof CreateCourseResponse>;
@@ -16,6 +17,7 @@ export type State = z.infer<typeof GetWorkspaceResponse> & {
   uploads: { path: string; name: string; size: number }[];
   reviewDays: string[];
   streakResumeGrace?: boolean;
+  generationUsage?: GenerationUsage;
 };
 export const emptyState = (): State => ({
   notebooks: [], courses: [], runs: [], questions: [], answers: [], uploads: [],
@@ -23,7 +25,9 @@ export const emptyState = (): State => ({
 });
 
 export function fail(message: string, status = 400): never {
-  throw Object.assign(new Error(message), { status });
+  const error = new Error(message) as Error & { status: number };
+  error.status = status;
+  throw error;
 }
 export async function readState(userId: string): Promise<State> {
   const [row] = await db.select().from(studentWorkspaces).where(eq(studentWorkspaces.userId, userId));

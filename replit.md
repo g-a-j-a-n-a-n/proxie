@@ -20,7 +20,7 @@ A private study companion that turns authorized lecture PDFs and transcripts int
 - DB: PostgreSQL + Drizzle ORM
 - Validation: Zod (`zod/v4`), `drizzle-zod`
 - API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle)
+- Build: esbuild (ESM bundle)
 
 ## Where things live
 
@@ -32,17 +32,14 @@ A private study companion that turns authorized lecture PDFs and transcripts int
 - `lib/api-spec/openapi.yaml` — API contract; regenerate client and validators after changes.
 - `attached_assets/PLAN_1794458462798.md` — original product brief.
 
-## Architecture decisions
+## Documentation
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
-
-## Product
-
-_Describe the high-level user-facing capabilities of this app once they exist._
-
-## User preferences
-
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- `README.md` — product overview, checks and documentation index.
+- `docs/SETUP.md` — configuration and portability limits.
+- `docs/OPERATIONS.md` — maintenance, backup/restore and incidents.
+- `docs/COSTS.md` — dated provider pricing and free-use limits.
+- `docs/PLAN-COMPLIANCE.md` — original-plan evidence and gaps.
+- `docs/SECURITY-REVIEW.md` and `SECURITY.md` — review results and reporting policy.
 
 ## Gotchas
 
@@ -51,6 +48,8 @@ _Populate as you build — explicit user instructions worth remembering across s
 - Limits: 15 MB and 100 PDF pages; 120,000 characters of combined source text.
 - Quote matching verifies a citation's source text, not semantic entailment; the notebook disclaimer makes that limitation explicit.
 - Do not record live lectures or show student mastery as an official grade.
+- Use one active API instance: background builds and startup recovery are not a distributed job queue.
+- Builds/regenerations are limited to 20 operations per account per UTC day; this is not a global spending cap.
 
 ## Pointers
 
