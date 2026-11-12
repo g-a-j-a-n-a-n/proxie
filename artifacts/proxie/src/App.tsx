@@ -1,4 +1,4 @@
-import { useEffect, useRef, type ComponentType, type ReactNode } from "react";
+import { useEffect, type ComponentType, type ReactNode } from "react";
 import { ClerkProvider, SignIn, SignUp, Show, useClerk } from "@clerk/react";
 import { publishableKeyFromHost } from "@clerk/react/internal";
 import { shadcn } from "@clerk/themes";
@@ -17,6 +17,7 @@ import NotebookPage from "@/pages/notebook";
 import Courses from "@/pages/courses";
 import CoursePage from "@/pages/course";
 import Progress from "@/pages/progress";
+import { clearQueryCacheOnUserChange } from "@/lib/auth-cache";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: false } },
@@ -123,17 +124,9 @@ function SignUpPage() {
 function ClerkQueryClientCacheInvalidator() {
   const { addListener } = useClerk();
   const qc = useQueryClient();
-  const prevUserIdRef = useRef<string | null | undefined>(undefined);
 
   useEffect(() => {
-    const unsubscribe = addListener(({ user }) => {
-      const userId = user?.id ?? null;
-      if (prevUserIdRef.current !== undefined && prevUserIdRef.current !== userId) {
-        qc.clear();
-      }
-      prevUserIdRef.current = userId;
-    });
-    return unsubscribe;
+    return clearQueryCacheOnUserChange(addListener, () => qc.clear());
   }, [addListener, qc]);
 
   return null;

@@ -8,9 +8,12 @@ import { courseFromSections, generateNotes, runNotebook, transcriptSource, valid
 import { ObjectStorageService } from "../lib/objectStorage";
 import { judgeUserId, seedJudgeWorkspace } from "../lib/judge-demo";
 
-const router: IRouter = Router();
 const storage = new ObjectStorageService();
-function user(req: Request) { return getAuth(req).userId!; }
+type UserIdResolver = (req: Request) => string | null | undefined;
+
+export function createStudyRouter(resolveUserId: UserIdResolver = (req) => getAuth(req).userId) {
+const router: IRouter = Router();
+function user(req: Request) { return resolveUserId(req)!; }
 function parse<T>(schema: z.ZodType<T>, value: unknown): T {
   const result = schema.safeParse(value);
   if (!result.success) fail("Please check your input. " + result.error.issues.map(i => `${i.path.join(".")}: ${i.message}`).join("; "));
@@ -22,7 +25,7 @@ function notebook(state: State, notebookId: string) { return state.notebooks.fin
 function course(state: State, courseId: string) { return state.courses.find(c => c.id === courseId) || fail("Course not found.", 404); }
 
 router.use((req: Request, res: Response, next: NextFunction) => {
-  if (!getAuth(req).userId) { res.status(401).json({ error: "Sign in to access your private study materials." }); return; }
+  if (!resolveUserId(req)) { res.status(401).json({ error: "Sign in to access your private study materials." }); return; }
   res.setHeader("Cache-Control", "private, no-store");
   next();
 });
@@ -291,4 +294,7 @@ router.get("/storage/objects/{*path}", async (req, res): Promise<void> => {
   res.setHeader("X-Content-Type-Options", "nosniff");
   file.createReadStream().on("error", () => { if (!res.headersSent) res.status(404).json({ error: "File not found." }); else res.end(); }).pipe(res);
 });
-export default router;
+return router;
+}
+
+export default createStudyRouter();
