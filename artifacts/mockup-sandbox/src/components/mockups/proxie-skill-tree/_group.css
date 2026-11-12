@@ -1,0 +1,41 @@
+@import url("https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap");
+
+:root {
+  --background: 42 45% 95%;
+  --foreground: 228 42% 20%;
+  --card: 44 60% 98%;
+  --card-foreground: 228 42% 20%;
+  --border: 40 22% 80%;
+  --muted: 42 30% 89%;
+  --muted-foreground: 228 15% 42%;
+  --primary: 226 60% 36%;
+  --primary-foreground: 44 60% 97%;
+  --secondary: 88 55% 82%;
+  --secondary-foreground: 150 40% 18%;
+  --input: 40 22% 76%;
+  --ring: 226 60% 36%;
+  --radius: 0.6rem;
+  --app-font-sans: "Atkinson Hyperlegible", system-ui, sans-serif;
+  --ink: 228 42% 20%;
+  --pen-blue: 226 60% 36%;
+  --pen-red: 4 68% 52%;
+  --hl-yellow: 52 96% 68%;
+  --hl-green: 92 62% 70%;
+  --hl-pink: 340 85% 84%;
+  --rule: 208 45% 82%;
+}
+
+body {
+  margin: 0;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: var(--app-font-sans);
+}
+
+.hand { font-family: "Caveat", cursive; letter-spacing: .01em; }
+.mono { font-family: "JetBrains Mono", monospace; }
+.paper-grid {
+  background-color: hsl(44 55% 97%);
+  background-image: linear-gradient(hsl(var(--rule) / .55) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--rule) / .55) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
