@@ -1,19 +1,19 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation, useParams, useSearch } from "wouter";
 import { useQueryClient } from "@tanstack/react-query";
 import { getGetQuizQueryKey, getGetRunQueryKey, getGetWorkspaceQueryKey, useDeleteCourse, useGetRun, useGetWorkspace, useUpdateCourse } from "@workspace/api-client-react";
 import type { Citation, Course, Topic } from "@workspace/api-client-react";
-import { Check, Compass, GitMerge, Lock, Pencil, Play, Trash2 } from "lucide-react";
+import { Compass, GitMerge, Pencil, Play, Trash2 } from "lucide-react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { BackLink } from "@/components/app-shell";
-import { Cite, SourceDialog } from "@/components/notebook-parts";
+import { SourceDialog } from "@/components/notebook-parts";
+import { CourseHoneycomb } from "@/components/course-honeycomb";
 import { QuizDialog, type QuizMode } from "@/components/quiz-runner";
 import { RunDiagram } from "@/components/run-diagram";
 import { EmptyNote, ErrorState, HonestLabel, PageSkeleton } from "@/components/states";
 import { useToast } from "@/hooks/use-toast";
-import { LEVELS, errMsg, relTime, topicDepths } from "@/lib/proxie";
-import { cn } from "@/lib/utils";
+import { errMsg } from "@/lib/proxie";
 
 export default function CoursePage() {
   const { id = "" } = useParams<{ id: string }>();
@@ -43,17 +43,6 @@ export default function CoursePage() {
     const t = new URLSearchParams(search).get("topic");
     if (t) setSelected(t);
   }, [search]);
-
-  const tiers = useMemo(() => {
-    if (!course) return [];
-    const depth = topicDepths(course.topics);
-    const out: Topic[][] = [];
-    [...course.topics].sort((a, b) => a.position - b.position).forEach((t) => {
-      const d = depth.get(t.id) ?? 0;
-      (out[d] ??= []).push(t);
-    });
-    return out.filter(Boolean);
-  }, [course]);
 
   if (ws.isLoading) return <PageSkeleton />;
   if (ws.isError) return <ErrorState message={errMsg(ws.error)} onRetry={() => ws.refetch()} />;
@@ -94,15 +83,12 @@ export default function CoursePage() {
     onError: onErr,
   });
 
-  const sel = course.topics.find((t) => t.id === selected);
-  const nameOf = (tid: string) => course.topics.find((t) => t.id === tid)?.name ?? "removed topic";
-
   return (
-    <div>
+    <div className="course-honeycomb">
       <BackLink href="/courses">All courses</BackLink>
-      <div className="flex flex-wrap items-start gap-4 rise">
-        <span className="mt-4 h-5 w-5 shrink-0 rounded-full" style={{ background: course.color }} />
-        <div className="flex-1">
+      <div className="hc-heading rise">
+        <span className="hc-mark" style={{ background: course.color }} aria-hidden />
+        <div className="hc-heading-main">
           {courseName !== null ? (
             <div className="flex flex-wrap gap-2">
               <input autoFocus className="field hand max-w-md !text-3xl font-bold" maxLength={120} value={courseName} onChange={(e) => setCourseName(e.target.value)} onKeyDown={(e) => e.key === "Enter" && saveName()} data-testid="input-course-rename" />
@@ -110,17 +96,19 @@ export default function CoursePage() {
               <button className="ghost-btn" onClick={() => setCourseName(null)} data-testid="button-cancel-course-name">Cancel</button>
             </div>
           ) : (
-            <h1 className="hand text-[52px] font-bold leading-[0.95] md:text-[64px]" data-testid="text-course-name">
-              <span className="marker-underline green">{course.name}</span>
+            <h1 className="hc-title" data-testid="text-course-name">
+              <span>{course.name}</span>
               <button onClick={() => setCourseName(course.name)} className="ml-3 align-middle text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--ink))]" aria-label="Rename course" data-testid="button-rename-course"><Pencil className="h-5 w-5" /></button>
             </h1>
           )}
-          <div className="mt-3"><HonestLabel>Based on {course.answerCount} quiz answer{course.answerCount === 1 ? "" : "s"} in this course · {course.xp} XP · not an official grade</HonestLabel></div>
+          <p className="hc-sub">A map of what you know, and what’s ready to explore next.</p>
+          <div className="mt-2"><HonestLabel>Based on {course.answerCount} quiz answer{course.answerCount === 1 ? "" : "s"} in this course · not an official grade</HonestLabel></div>
         </div>
+        <div className="hc-xp" aria-label={`${course.xp} quiz XP earned`}><strong>{course.xp} XP</strong><span>earned from quizzes</span></div>
         <div className="flex flex-wrap gap-2">
           {!course.placementDone && course.topics.length > 0 && <button className="ink-btn" onClick={() => setQuiz({ kind: "placement" })} data-testid="button-placement"><Compass className="h-4 w-4" /> Take placement check</button>}
           {course.placementDone && <button className="ink-btn" onClick={() => setQuiz({ kind: "review" })} data-testid="button-review-all"><Play className="h-4 w-4" /> Review quiz</button>}
-          <button className="ghost-btn" onClick={() => setConfirmDel(true)} data-testid="button-delete-course"><Trash2 className="h-4 w-4" /></button>
+          <button className="ghost-btn" onClick={() => setConfirmDel(true)} aria-label="Delete course" data-testid="button-delete-course"><Trash2 className="h-4 w-4" /></button>
         </div>
       </div>
 
@@ -130,73 +118,11 @@ export default function CoursePage() {
         </div>
       )}
 
-      <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_330px]">
-        <section className="paper-grid rounded-2xl border border-[hsl(var(--border))] p-4 md:p-6" data-testid="panel-skill-tree">
-          {course.topics.length === 0 ? (
-            <EmptyNote title="No topics found" body="Proxie couldn't find topic lines in this syllabus. Delete this course and paste a schedule with one topic per line." />
-          ) : (
-            <div className="space-y-2">
-              {tiers.map((tier, ti) => (
-                <div key={ti}>
-                  {ti > 0 && (
-                    <svg className="mx-auto block h-8 w-16 text-[hsl(var(--ink)/0.45)]" viewBox="0 0 64 32" aria-hidden>
-                      <path d="M32 2c-2 9 2 16 0 26M24 20l8 9 8-9" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                    </svg>
-                  )}
-                  <p className="mono mb-2 text-[10px] uppercase tracking-widest text-[hsl(var(--muted-foreground))]">{ti === 0 ? "Foundations" : `Builds on tier ${ti}`}</p>
-                  <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                    {tier.map((t) => {
-                      const L = LEVELS[t.level];
-                      return (
-                        <button key={t.id} onClick={() => setSelected(t.id)} data-testid={`node-topic-${t.id}`}
-                          className={cn("pop relative rounded-2xl border-2 bg-[hsl(var(--card))] p-3.5 text-left transition-transform hover:-translate-y-0.5",
-                            selected === t.id ? "border-[hsl(var(--ink))] shadow-[4px_4px_0_hsl(var(--hl-yellow))]" : "border-[hsl(var(--border))]", t.level === "Locked" && "opacity-75")}>
-                          <div className="flex items-center gap-2">
-                            <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full" style={{ background: L.dot }}>
-                              {t.level === "Locked" ? <Lock className="h-3.5 w-3.5 text-white" /> : t.level === "Mastered" ? <Check className="h-4 w-4 text-white" /> : <span className="hand text-lg font-bold text-white">{t.position + 1}</span>}
-                            </span>
-                            <span className="font-bold leading-tight">{t.name}</span>
-                          </div>
-                          <div className="mt-2 flex flex-wrap items-center gap-1.5">
-                            <span className={cn("rounded-full px-2 py-0.5 text-[11px] font-bold", L.tone)}>{L.label}</span>
-                            {t.prerequisites.length > 0 && <span className="text-[11px] text-[hsl(var(--muted-foreground))]">after {t.prerequisites.map(nameOf).join(", ")}</span>}
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-          <div className="mt-6 flex flex-wrap gap-3 border-t border-dashed border-[hsl(var(--ink)/0.15)] pt-4">
-            {Object.values(LEVELS).map((l) => (
-              <span key={l.label} className="flex items-center gap-1.5 text-xs"><span className="h-2.5 w-2.5 rounded-full" style={{ background: l.dot }} />{l.label}: {l.blurb}</span>
-            ))}
-          </div>
-        </section>
-
-        <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
-          {sel ? (
-            <div className="rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] p-5 pop" data-testid="panel-topic">
-              <p className="hand text-[32px] font-bold leading-none">{sel.name}</p>
-              <span className={cn("mt-2 inline-block rounded-full px-2.5 py-0.5 text-xs font-bold", LEVELS[sel.level].tone)}>{sel.level}</span>
-              <p className="mt-3 text-sm">From {sel.citation.locator}<Cite c={sel.citation} onOpen={setCite} /></p>
-              {sel.citation.quote && <p className="mt-1 text-sm italic text-[hsl(var(--muted-foreground))]">"{sel.citation.quote}"</p>}
-              <HonestLabel>{sel.correctSessions} correct session{sel.correctSessions === 1 ? "" : "s"} · last review {relTime(sel.lastReviewedAt)}</HonestLabel>
-              <div className="mt-4 flex flex-wrap gap-2">
-                <button className="ink-btn !py-2 text-sm" onClick={() => setQuiz({ kind: "review", topicId: sel.id })} disabled={sel.level === "Locked"} data-testid="button-review-topic"><Play className="h-3.5 w-3.5" /> Review</button>
-                <button className="ghost-btn !py-2 text-sm" onClick={() => openEdit(sel)} data-testid="button-edit-topic"><Pencil className="h-3.5 w-3.5" /> Edit</button>
-                <button className="ghost-btn !py-2 text-sm" onClick={() => setRemoveTopic(sel)} data-testid="button-remove-topic"><Trash2 className="h-3.5 w-3.5" /> Remove</button>
-              </div>
-              {sel.level === "Locked" && <p className="mt-2 text-xs text-[hsl(var(--muted-foreground))]">Unlocks when its prerequisites are practiced.</p>}
-            </div>
-          ) : (
-            <p className="rounded-2xl bg-[hsl(var(--card))] p-4 text-sm text-[hsl(var(--muted-foreground))]">Tap a node to see where it came from, review it, or edit it.</p>
-          )}
-          {run.data && <RunDiagram events={run.data.events} running={run.data.status === "running"} compact />}
-        </aside>
-      </div>
+      <CourseHoneycomb course={course} selectedId={selected} onSelect={setSelected}
+        onReview={topic => setQuiz({ kind: "review", topicId: topic.id })} onEdit={openEdit}
+        onRemove={setRemoveTopic} onCitation={setCite}>
+        {run.data && <RunDiagram events={run.data.events} running={run.data.status === "running"} compact />}
+      </CourseHoneycomb>
 
       <QuizDialog course={course} mode={quiz} onClose={() => setQuiz(null)} />
       <SourceDialog open={!!cite} onOpenChange={(o) => !o && setCite(null)} citation={cite} sources={course.sources} />

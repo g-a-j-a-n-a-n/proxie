@@ -14,6 +14,12 @@ The attached product plan treats course setup, quizzes/levels, and the skill tre
 
 **How to apply:** Preserve these boundaries in future simplifications and feature additions.
 
+The approved visual direction for course skill trees is a game-like honeycomb map.
+
+**Why:** The user selected the honeycomb prototype and explicitly requested its integration into the app.
+
+**How to apply:** Keep future skill-tree work consistent with this direction while using real, source-backed learning progress rather than the prototype's simulated quiz rules.
+
 Do not replace private App Storage with persistent local PDF files or database blobs to work around transient provisioning failures.
 
 **Why:** Initial managed storage provisioning returned internal errors twice, then succeeded when retried after independent implementation work.

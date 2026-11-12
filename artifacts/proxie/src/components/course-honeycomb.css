@@ -1,0 +1,92 @@
+.course-honeycomb {
+  --hc-ink: #28343a;
+  --hc-muted: #626e65;
+  --hc-paper: #f7f5ec;
+  --hc-card: #fffdf5;
+  --hc-line: #dedbcc;
+  color: var(--hc-ink);
+}
+.course-honeycomb .hc-heading { display:flex; align-items:flex-start; flex-wrap:wrap; gap:18px; margin-top:12px; }
+.course-honeycomb .hc-heading-main { flex:1; min-width:min(100%,260px); }
+.course-honeycomb .hc-title { font:700 clamp(36px,5vw,54px)/.98 "Caveat",cursive; letter-spacing:.01em; margin:0; color:#29363a; overflow-wrap:anywhere; }
+.course-honeycomb .hc-sub { font-size:13px; color:var(--hc-muted); margin:11px 0 0; }
+.course-honeycomb .hc-mark { width:12px; height:38px; border-radius:10px; background:#648669; box-shadow:5px 5px 0 #dce5d1; flex:none; margin-top:6px; }
+.course-honeycomb .hc-xp { background:#f0e4bd; border:1px solid #ddc98d; border-radius:18px; padding:12px 16px; min-width:130px; }
+.course-honeycomb .hc-xp strong { font:700 22px "JetBrains Mono",monospace; color:#624b22; }
+.course-honeycomb .hc-xp span { display:block; color:#776648; font-size:11px; margin-top:3px; }
+.course-honeycomb .hc-layout { display:grid; grid-template-columns:minmax(0,1fr) 320px; gap:22px; margin-top:26px; align-items:start; }
+.course-honeycomb .hc-map { min-width:0; background-color:#fbfaf3; background-image:radial-gradient(#cfd4c3 .8px,transparent .8px); background-size:19px 19px; border:1px solid var(--hc-line); border-radius:24px; padding:22px clamp(12px,2.5vw,32px) 20px; box-shadow:0 8px 25px #45492d0c; }
+.course-honeycomb .hc-map-head { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; padding:1px 4px 16px; border-bottom:1px solid #e5e2d6; }
+.course-honeycomb .hc-map-head strong { font-size:14px; }
+.course-honeycomb .hc-map-head span { font:11px "JetBrains Mono",monospace; color:var(--hc-muted); }
+.course-honeycomb .hc-tier { padding:16px 0 0; text-align:center; }
+.course-honeycomb .hc-tier-label { font:10px "JetBrains Mono",monospace; text-transform:uppercase; letter-spacing:.13em; color:#69705f; margin:0 0 9px; }
+.course-honeycomb .hc-nodes { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:12px; }
+.course-honeycomb .hc-node { position:relative; flex:0 0 auto; width:clamp(132px,15vw,192px); height:177px; border:0; background:transparent; padding:2px; cursor:pointer; transition:transform .18s; border-radius:12px; }
+.course-honeycomb .hc-node::before { content:""; position:absolute; inset:0; background:#dedbcc; clip-path:polygon(25% 3%,75% 3%,99% 50%,75% 97%,25% 97%,1% 50%); }
+.course-honeycomb .hc-node:hover { transform:translateY(-3px); }
+.course-honeycomb .hc-node.selected::before { background:#83966e; }
+.course-honeycomb .hc-node:focus-visible { outline:3px solid #354e4b; outline-offset:3px; }
+.course-honeycomb .hc-node-inner { position:relative; height:100%; width:100%; clip-path:polygon(25% 3%,75% 3%,99% 50%,75% 97%,25% 97%,1% 50%); background:var(--node-bg); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:19px 24px; text-align:center; }
+.course-honeycomb .hc-node.locked .hc-node-inner { background:#f5f3eb; }
+.course-honeycomb .hc-node-title { font-weight:700; font-size:13px; line-height:1.17; max-width:135px; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; overflow-wrap:anywhere; }
+.course-honeycomb .hc-node-status { font:9px "JetBrains Mono",monospace; text-transform:uppercase; letter-spacing:.06em; margin-top:7px; color:var(--node-color); }
+.course-honeycomb .hc-node-count { font-size:10px; color:#62695e; margin-top:5px; }
+.course-honeycomb .hc-node-icon { height:25px; width:25px; flex:none; border-radius:50%; display:grid; place-items:center; background:var(--node-color); color:white; margin-bottom:7px; font:700 11px "JetBrains Mono",monospace; }
+.course-honeycomb .hc-connector { display:flex; justify-content:center; color:#8b917c; height:19px; align-items:center; }
+.course-honeycomb .hc-legend { display:flex; justify-content:center; gap:12px; flex-wrap:wrap; border-top:1px dashed #d7d5ca; padding-top:14px; margin-top:17px; color:#616c63; font-size:11px; }
+.course-honeycomb .hc-legend span { display:flex; align-items:center; gap:6px; }
+.course-honeycomb .hc-dot { width:9px; height:9px; border-radius:50%; display:inline-block; flex:none; }
+.course-honeycomb .hc-side { display:flex; flex-direction:column; gap:13px; min-width:0; }
+.course-honeycomb .hc-detail, .course-honeycomb .hc-progress { border:1px solid var(--hc-line); background:var(--hc-card); border-radius:19px; padding:18px; box-shadow:0 6px 18px #4d4b3408; overflow-wrap:anywhere; }
+.course-honeycomb .hc-detail-kicker { font:10px "JetBrains Mono",monospace; text-transform:uppercase; letter-spacing:.12em; color:#697261; }
+.course-honeycomb .hc-detail h2 { font:700 29px/1.02 "Caveat",cursive; margin:8px 0; }
+.course-honeycomb .hc-badge { display:inline-flex; border-radius:99px; padding:5px 10px; font-size:11px; font-weight:700; }
+.course-honeycomb .hc-detail-copy { font-size:12px; line-height:1.5; color:#626f67; margin:13px 0; }
+.course-honeycomb .hc-source { border-left:3px solid #d5bf79; background:#f7f3e4; padding:10px 11px; margin:12px 0; border-radius:0 9px 9px 0; }
+.course-honeycomb .hc-source-label { display:flex; align-items:center; flex-wrap:wrap; gap:5px; font:10px "JetBrains Mono",monospace; color:#706344; }
+.course-honeycomb .hc-quote { font-size:12px; line-height:1.5; font-style:italic; margin:6px 0 0; color:#4f5b55; }
+.course-honeycomb .hc-source-name { margin-top:7px; font:10px "JetBrains Mono",monospace; color:#706344; }
+.course-honeycomb .hc-prereq { font-size:11px; color:#626e61; margin:13px 0 0; }
+.course-honeycomb .hc-prereq button { color:#404d46; font-weight:700; text-decoration:underline; text-underline-offset:2px; }
+.course-honeycomb .hc-next { display:flex; align-items:flex-start; gap:4px; font-size:11px; color:#626e61; margin-top:7px; }
+.course-honeycomb .hc-next svg { flex:none; margin-top:1px; }
+.course-honeycomb .hc-buttons { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+.course-honeycomb .hc-button { border:0; border-radius:99px; min-height:40px; padding:10px 14px; font-size:12px; font-weight:700; display:inline-flex; align-items:center; gap:7px; cursor:pointer; }
+.course-honeycomb .hc-button.primary { background:#354f56; color:white; }
+.course-honeycomb .hc-button:disabled { opacity:.45; cursor:not-allowed; }
+.course-honeycomb .hc-button.subtle { background:#eeeadd; color:#4e5c51; }
+.course-honeycomb .hc-progress-title { display:flex; gap:8px; align-items:center; font-weight:700; font-size:13px; }
+.course-honeycomb .hc-progress-title svg { color:#9a7838; }
+.course-honeycomb .hc-progress-numbers { display:flex; justify-content:space-between; align-items:baseline; margin-top:13px; gap:8px; }
+.course-honeycomb .hc-progress-numbers strong { font:700 20px "JetBrains Mono",monospace; }
+.course-honeycomb .hc-progress-numbers strong span { font:inherit; color:#737766; }
+.course-honeycomb .hc-progress-numbers > span { font-size:11px; color:#636d5f; }
+.course-honeycomb .hc-bar { height:9px; background:#e9e7db; border-radius:20px; overflow:hidden; margin-top:9px; }
+.course-honeycomb .hc-bar span { height:100%; display:block; background:linear-gradient(90deg,#738f67,#a7b782); border-radius:inherit; transition:width .3s; }
+.course-honeycomb .hc-progress-note { font-size:11px; color:#636d5f; margin:10px 0 0; line-height:1.4; }
+.course-honeycomb .hc-footer { display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-top:14px; font-size:11px; color:#636d5f; }
+.course-honeycomb .hc-footer strong { color:#58665a; }
+@media (max-width:1000px) {
+  .course-honeycomb .hc-layout { grid-template-columns:minmax(0,1fr) 280px; gap:14px; }
+  .course-honeycomb .hc-map { padding:18px 10px; }
+}
+@media (max-width:760px) {
+  .course-honeycomb .hc-layout { grid-template-columns:1fr; margin-top:18px; }
+  .course-honeycomb .hc-title { font-size:39px; }
+  .course-honeycomb .hc-heading { gap:12px; }
+  .course-honeycomb .hc-xp { min-width:0; padding:9px 11px; }
+  .course-honeycomb .hc-xp strong { font-size:16px; }
+  .course-honeycomb .hc-map { padding:14px 7px; border-radius:18px; }
+  .course-honeycomb .hc-tier { padding-top:12px; }
+  .course-honeycomb .hc-node { width:132px; height:151px; }
+  .course-honeycomb .hc-node-inner { padding:15px 17px; }
+  .course-honeycomb .hc-node-title { font-size:12px; }
+  .course-honeycomb .hc-node-status { font-size:8px; }
+  .course-honeycomb .hc-node-count { font-size:9px; }
+  .course-honeycomb .hc-legend { gap:9px; font-size:10px; }
+  .course-honeycomb .hc-detail h2 { font-size:32px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .course-honeycomb .hc-node, .course-honeycomb .hc-bar span { transition:none; }
+}
