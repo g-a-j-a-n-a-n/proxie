@@ -26,6 +26,12 @@ The user likes the front page's existing overview and explanation of Proxie's pu
 
 **How to apply:** Preserve the purpose-led introduction when extending the front page; make source-checking and visual learning progress understandable without implying automatic error correction or guaranteed mastery.
 
+The user prefers to keep Proxie's ongoing operation free so they can maintain it indefinitely.
+
+**Why:** The user explicitly requested free ongoing maintenance while preparing the project for GitHub.
+
+**How to apply:** Explain ongoing costs and free-tier limits before recommending paid infrastructure. Do not promise permanent free service or silently replace required product capabilities to reduce costs.
+
 Do not replace private App Storage with persistent local PDF files or database blobs to work around transient provisioning failures.
 
 **Why:** Initial managed storage provisioning returned internal errors twice, then succeeded when retried after independent implementation work.
