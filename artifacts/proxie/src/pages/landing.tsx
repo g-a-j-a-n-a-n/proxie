@@ -19,7 +19,7 @@ const EX_STEPS = [
 function ExampleTag() {
   return (
     <span className="mono inline-flex items-center gap-1.5 rounded-full border border-dashed border-[hsl(var(--pen-red))] bg-[hsl(var(--card))] px-3 py-1 text-[11px] font-medium uppercase tracking-wider text-[hsl(var(--pen-red))]" data-testid="text-example-label">
-      Example page · written by the Proxie team · not real student data
+      Notebook preview · fictional sample
     </span>
   );
 }
@@ -30,7 +30,6 @@ export default function Landing() {
       <header className="mx-auto flex h-20 max-w-6xl items-center px-5">
         <Logo />
         <div className="ml-auto flex items-center gap-2">
-          <Link href="/example/dashboard" className="ghost-btn !border-transparent text-sm" data-testid="link-example-workspace">Example workspace</Link>
           <Link href="/sign-in" className="ghost-btn !border-transparent" data-testid="link-sign-in">Sign in</Link>
           <Link href="/sign-up" className="ink-btn" data-testid="link-sign-up">Start a notebook</Link>
         </div>
@@ -48,8 +47,9 @@ export default function Landing() {
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <Link href="/sign-up" className="ink-btn !px-6 !py-3 text-lg" data-testid="button-hero-start">Make my first notebook <ArrowRight className="h-5 w-5" /></Link>
-            <a href="#example" className="ghost-btn !py-3" data-testid="link-see-example">See an example page</a>
+            <Link href="/example/dashboard" className="ghost-btn !py-3" data-testid="link-example-workspace">Explore example workspace <ArrowRight className="h-4 w-4" /></Link>
           </div>
+          <p className="mt-3 text-sm text-[hsl(var(--muted-foreground))]">Explore and edit pre-generated examples without signing up. Create an account to add your own notebooks.</p>
           <p className="mt-5 flex items-center gap-2 text-sm text-[hsl(var(--muted-foreground))]"><Lock className="h-4 w-4" /> Private account. Your materials stay yours.</p>
         </div>
 

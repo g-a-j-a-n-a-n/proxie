@@ -10,12 +10,14 @@ import Courses from "@/pages/courses";
 import Course from "@/pages/course";
 import Progress from "@/pages/progress";
 import { ExampleContext } from "@/lib/example-mode";
+import { Lock } from "lucide-react";
 
 function PersonalAccountPrompt() {
   return <div className="paper-grid rounded-2xl border p-7">
-    <h1 className="hand text-4xl font-bold">Bring your own materials</h1>
-    <p className="mt-3 max-w-xl">This example uses fictional notes so you can safely try citations, flags, edits, quizzes, and the honeycomb tree. Uploads and AI generation require a personal account.</p>
-    <a href={`${basePath}/sign-up`} className="ink-btn mt-5">Create a personal account</a>
+    <Lock className="mb-3 h-6 w-6 text-[hsl(var(--pen-blue))]" aria-hidden />
+    <h1 className="hand text-4xl font-bold" data-testid="text-notebook-creation-locked">Sign up to create notebooks</h1>
+    <p className="mt-3 max-w-xl">Notebook creation is locked in the example workspace. You can browse and experiment with the pre-generated notes, citations, flags, quizzes, and honeycomb tree. Sign up to add your own notebooks, courses, or uploads and use AI generation.</p>
+    <a href={`${basePath}/sign-up`} className="ink-btn mt-5" data-testid="link-unlock-notebooks">Sign up to unlock creation</a>
     <div className="mt-4"><Link href="/dashboard" className="underline">Back to the example desk</Link></div>
   </div>;
 }

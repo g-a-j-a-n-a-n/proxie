@@ -2,7 +2,7 @@ import { useState, type ReactNode } from "react";
 import { Link, useLocation } from "wouter";
 import { useClerk, useUser } from "@clerk/react";
 import { useQueryClient } from "@tanstack/react-query";
-import { BookOpen, LayoutGrid, LogOut, Network, PenLine, Sprout } from "lucide-react";
+import { BookOpen, LayoutGrid, Lock, LogOut, Network, PenLine, Sprout } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { basePath } from "@/lib/proxie";
 import { cn } from "@/lib/utils";
@@ -77,8 +77,8 @@ export function AppShell({ children }: { children: ReactNode }) {
               <Link key={n.href} href={n.href} data-testid={`link-nav-${n.label.toLowerCase().replace(/\s/g, "-")}`}
                 className={cn("relative flex items-center gap-2 rounded-full px-3.5 py-2 text-[15px] font-bold transition-colors",
                   active(n.href) ? "text-[hsl(var(--ink))]" : "text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--ink))]")}>
-                <n.icon className="h-4 w-4" />
-                <span className={cn(active(n.href) && "marker-underline")}>{n.label}</span>
+                {isExample && n.href === "/notebooks/new" ? <Lock className="h-4 w-4" /> : <n.icon className="h-4 w-4" />}
+                <span className={cn(active(n.href) && "marker-underline")}>{n.label}{isExample && n.href === "/notebooks/new" ? " · sign up" : ""}</span>
               </Link>
             ))}
           </nav>
@@ -107,8 +107,8 @@ export function AppShell({ children }: { children: ReactNode }) {
         {NAV.map((n) => (
           <Link key={n.href} href={n.href} data-testid={`link-mobile-${n.label.toLowerCase().replace(/\s/g, "-")}`}
             className={cn("flex flex-col items-center gap-0.5 py-2.5 text-[11px] font-bold", active(n.href) ? "text-[hsl(var(--pen-blue))]" : "text-[hsl(var(--muted-foreground))]")}>
-            <n.icon className="h-5 w-5" />
-            {n.label}
+            {isExample && n.href === "/notebooks/new" ? <Lock className="h-5 w-5" /> : <n.icon className="h-5 w-5" />}
+            {isExample && n.href === "/notebooks/new" ? "New · sign up" : n.label}
           </Link>
         ))}
       </nav>

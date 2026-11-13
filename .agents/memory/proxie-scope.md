@@ -6,7 +6,7 @@ The student product requires private per-student accounts. The legacy shared, ed
 
 **Why:** The user wanted the published site to let visitors explore the feature suite without calling it a judge demo, and explicitly selected private practice copies instead of shared edits.
 
-**How to apply:** Keep normal student materials and progress separated by authenticated identity. Public examples must use fictional content isolated from students and other visitors; uploads and paid AI actions require a personal account. Do not enable the legacy shared Clerk sign-in in production.
+**How to apply:** Keep normal student materials and progress separated by authenticated identity. Public examples must use fictional content isolated from students and other visitors. Visitors may browse and experiment with pre-generated examples; adding their own notebooks or courses, uploads, and paid AI actions requires signing up for a personal account. Do not enable the legacy shared Clerk sign-in in production.
 
 The attached product plan treats course setup, quizzes/levels, and the skill tree as core. If scope must be reduced, cut decorative notebook styling and badges before these capabilities. Proxie only uses materials students already have permission to access and does not record live lectures.
 

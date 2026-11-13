@@ -2,7 +2,7 @@ import { Link } from "wouter";
 import { useUser } from "@clerk/react";
 import { useExampleWorkspace } from "@/lib/example-mode";
 import { useGetWorkspace } from "@workspace/api-client-react";
-import { ArrowRight, BookOpen, Flame, Network, PenLine, Target } from "lucide-react";
+import { ArrowRight, BookOpen, Flame, Lock, Network, PenLine, Target } from "lucide-react";
 import { EmptyNote, ErrorState, HandTitle, HonestLabel, PageSkeleton } from "@/components/states";
 import { errMsg, relTime, stepLabel } from "@/lib/proxie";
 import { cn } from "@/lib/utils";
@@ -38,7 +38,7 @@ export default function Dashboard() {
 
       {fresh ? (
         <div className="grid gap-8 md:grid-cols-2">
-          <EmptyNote title="A blank notebook" body="Upload the slides from a lecture you missed, or paste its transcript. Proxie writes the notes and cites every line." action={<Link href="/notebooks/new" className="ink-btn" data-testid="button-empty-new-notebook"><PenLine className="h-4 w-4" /> Build my first notebook</Link>} />
+          <EmptyNote title={isExample ? "Restore your examples" : "A blank notebook"} body={isExample ? "Use Reset example above to bring back the pre-generated notebook and course. Sign up to create your own." : "Upload the slides from a lecture you missed, or paste its transcript. Proxie writes the notes and cites every line."} action={<Link href="/notebooks/new" className="ink-btn" data-testid="button-empty-new-notebook">{isExample ? <Lock className="h-4 w-4" /> : <PenLine className="h-4 w-4" />} {isExample ? "Sign up to create" : "Build my first notebook"}</Link>} />
           <EmptyNote tone="green" title="No courses yet" body="Paste a syllabus and it becomes a skill tree. A short placement check sets where you start." action={<Link href="/courses" className="ghost-btn" data-testid="button-empty-new-course"><Network className="h-4 w-4" /> Set up a course</Link>} />
         </div>
       ) : (
@@ -46,10 +46,10 @@ export default function Dashboard() {
           <section>
             <div className="mb-4 flex items-center justify-between">
               <h2 className="hand text-[36px] font-bold">Notebooks</h2>
-              <Link href="/notebooks/new" className="ink-btn !py-2 text-sm" data-testid="button-new-notebook"><PenLine className="h-4 w-4" /> New</Link>
+              <Link href="/notebooks/new" className="ink-btn !py-2 text-sm" data-testid="button-new-notebook">{isExample ? <Lock className="h-4 w-4" /> : <PenLine className="h-4 w-4" />} {isExample ? "New · sign up" : "New"}</Link>
             </div>
             {sorted.length === 0 ? (
-              <EmptyNote title="Nothing written yet" body="Your courses are ready. Add lecture slides or a transcript to get notes." action={<Link href="/notebooks/new" className="ink-btn" data-testid="button-first-notebook">Build a notebook</Link>} />
+              <EmptyNote title="Nothing written yet" body={isExample ? "Use Reset example to restore the sample notebook, or sign up to add your own." : "Your courses are ready. Add lecture slides or a transcript to get notes."} action={<Link href="/notebooks/new" className="ink-btn" data-testid="button-first-notebook">{isExample ? "Sign up to create" : "Build a notebook"}</Link>} />
             ) : (
               <div className="grid gap-4 sm:grid-cols-2">
                 {sorted.map((n, i) => {
