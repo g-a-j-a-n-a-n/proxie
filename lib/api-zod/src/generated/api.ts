@@ -7,6 +7,26 @@
 import * as zod from 'zod';
 
 
+/**
+ * Sets an HttpOnly SameSite=Strict cookie scoped to /api/example. No Clerk sign-in, student data, file storage or AI call. Sample reads and safe edits use the existing study response schemas under /example; uploads and generation are forbidden there.
+ * @summary Open or resume an isolated temporary fictional workspace
+ */
+export const OpenExampleSessionResponse = zod.object({
+  "active": zod.literal(true)
+})
+
+
+export const CloseExampleSessionResponse = zod.void()
+
+
+/**
+ * @summary Restore only this visitor's fictional sample data
+ */
+export const ResetExampleSessionResponse = zod.object({
+  "reset": zod.literal(true)
+})
+
+
 export const HealthCheckResponse = zod.object({
   "status": zod.string()
 })

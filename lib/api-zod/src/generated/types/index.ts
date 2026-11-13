@@ -11,6 +11,8 @@ export * from './citation';
 export * from './course';
 export * from './courseInput';
 export * from './courseUpdate';
+export * from './exampleResetStatus';
+export * from './exampleSessionStatus';
 export * from './flag';
 export * from './flagInput';
 export * from './healthStatus';

@@ -6,6 +6,8 @@ import { BookOpen, LayoutGrid, LogOut, Network, PenLine, Sprout } from "lucide-r
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { basePath } from "@/lib/proxie";
 import { cn } from "@/lib/utils";
+import { useExampleWorkspace } from "@/lib/example-mode";
+import { ExampleBanner } from "./example-banner";
 
 const NAV = [
   { href: "/dashboard", label: "Desk", icon: LayoutGrid },
@@ -25,19 +27,21 @@ export function Logo({ className }: { className?: string }) {
 
 export function AppShell({ children }: { children: ReactNode }) {
   const [location] = useLocation();
+  const isExample = useExampleWorkspace();
   const { user } = useUser();
   const { signOut } = useClerk();
   const queryClient = useQueryClient();
   const [resetting, setResetting] = useState(false);
   const [demoError, setDemoError] = useState("");
   const isJudge = user?.publicMetadata?.isProxieJudge === true;
-  const name = user?.firstName || user?.primaryEmailAddress?.emailAddress?.split("@")[0] || "you";
-  const initials = (user?.firstName?.[0] ?? name[0] ?? "P").toUpperCase() + (user?.lastName?.[0] ?? "").toUpperCase();
+  const name = isExample ? "Explorer" : user?.firstName || user?.primaryEmailAddress?.emailAddress?.split("@")[0] || "you";
+  const initials = isExample ? "EX" : (user?.firstName?.[0] ?? name[0] ?? "P").toUpperCase() + (user?.lastName?.[0] ?? "").toUpperCase();
   const active = (href: string) => location === href || (href !== "/dashboard" && href !== "/notebooks/new" && location.startsWith(href));
 
   return (
     <div className="min-h-[100dvh] pb-20 md:pb-0">
-      {isJudge && (
+      {isExample && <ExampleBanner />}
+      {isJudge && !isExample && (
         <div className="border-b-2 border-[hsl(var(--hl-yellow))] bg-[hsl(var(--hl-yellow)/0.38)] px-4 py-3">
           <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 md:px-2">
             <p className="max-w-3xl text-sm font-semibold text-[hsl(var(--ink))]">
@@ -79,7 +83,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             ))}
           </nav>
           <div className="ml-auto">
-            <DropdownMenu>
+            {isExample ? <span className="rounded-full bg-[hsl(var(--hl-green))] px-4 py-2 text-sm font-bold">Explorer</span> : <DropdownMenu>
               <DropdownMenuTrigger className="flex items-center gap-2 rounded-full p-1 pr-3 hover:bg-[hsl(var(--muted))]" data-testid="button-account">
                 <span className="grid h-9 w-9 place-items-center rounded-full bg-[hsl(var(--hl-green))] text-sm font-bold text-[hsl(var(--ink))]">{initials}</span>
                 <span className="hidden text-sm font-bold sm:inline">{name}</span>
@@ -94,7 +98,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                   <LogOut className="mr-2 h-4 w-4" /> Sign out
                 </DropdownMenuItem>
               </DropdownMenuContent>
-            </DropdownMenu>
+            </DropdownMenu>}
           </div>
         </div>
       </header>

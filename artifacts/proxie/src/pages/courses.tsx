@@ -4,10 +4,12 @@ import { useQueryClient } from "@tanstack/react-query";
 import { getGetWorkspaceQueryKey, useCreateCourse, useGetWorkspace } from "@workspace/api-client-react";
 import { AlertTriangle, Network, Plus } from "lucide-react";
 import { EmptyNote, ErrorState, HandTitle, PageSkeleton } from "@/components/states";
-import { COURSE_COLORS, errMsg } from "@/lib/proxie";
+import { COURSE_COLORS, errMsg, basePath } from "@/lib/proxie";
+import { useExampleWorkspace } from "@/lib/example-mode";
 import { cn } from "@/lib/utils";
 
 export default function Courses() {
+  const isExample = useExampleWorkspace();
   const ws = useGetWorkspace();
   const qc = useQueryClient();
   const [, setLocation] = useLocation();
@@ -38,10 +40,12 @@ export default function Courses() {
           <HandTitle className="text-[52px] md:text-[64px]" tone="green">Courses</HandTitle>
           <p className="mt-3 max-w-lg text-[hsl(var(--ink)/0.75)]">Each course is a skill tree built from its syllabus. You can rename, merge and rewire any of it.</p>
         </div>
-        {courses.length > 0 && !showForm && <button className="ink-btn" onClick={() => setShowForm(true)} data-testid="button-show-course-form"><Plus className="h-4 w-4" /> New course</button>}
+        {isExample ? <a className="ink-btn" href={`${basePath}/sign-up`}>Create your own course</a> :
+          courses.length > 0 && !showForm && <button className="ink-btn" onClick={() => setShowForm(true)} data-testid="button-show-course-form"><Plus className="h-4 w-4" /> New course</button>}
       </div>
 
-      {formOpen && (
+      {isExample && courses.length === 0 && <p className="rounded-xl border p-5">You removed the sample course. Use “Reset example” above to restore your practice materials.</p>}
+      {formOpen && !isExample && (
         <section className="paper-grid grid gap-6 rounded-2xl border border-[hsl(var(--border))] p-5 md:grid-cols-[1fr_1.4fr] md:p-7 rise">
           <div className="space-y-4">
             <p className="hand text-3xl font-bold">From your syllabus</p>

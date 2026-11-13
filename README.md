@@ -11,6 +11,7 @@ Proxie turns lecture materials a student is allowed to use into a private, sourc
 - Supports placement questions, spaced review, evidence-based XP, quests, badges, and pausable streaks.
 - Replays the actual build/flag/fix events at 0.5×, 1×, or 2× speed without slowing the real build.
 - Formats pseudocode as code rather than flattened prose, retaining the original text when indentation must be inferred.
+- Offers a public **Example workspace** with a separate temporary practice copy for each visitor—no sign-up or shared student login.
 
 **Accuracy boundary:** matching a quotation proves that the quotation appears in the source, not that the AI's interpretation is correct. Students must check citations. Direct edits keep original source references and are explicitly not AI-verified.
 
@@ -76,6 +77,7 @@ Never run the isolation suite against production. It tests account isolation wit
 - A scanned PDF without extractable text needs a transcript; there is no OCR or live recording.
 - Each account can request **20 builds/regenerations per UTC day**. Failed attempts also consume the allowance; viewing, quizzes, and manual edits do not. This is an abuse guard, **not** a global AI spending cap.
 - The shared editable judge account is **development-only**, uses fictional material, and must not hold private student data.
+- The public **Example workspace** uses isolated, fictional in-memory data that expires after two hours or a server restart. It supports citations, flags, manual edits, quizzes, progress, and the honeycomb tree. Uploads, new-course/notebook builds, and AI regeneration require a personal account and are blocked server-side for examples. See [Example workspace](docs/EXAMPLE-WORKSPACE.md).
 - Keep a **single active API instance** with this implementation. Jobs run in process; startup recovery is not a distributed job queue.
 - Signed upload links expire after 15 minutes. The extraction limit is checked after upload; storage-level upload quotas and orphan cleanup remain hardening work.
 - GitHub stores code. It does **not** include student data, managed service credentials, or a running backend/database.

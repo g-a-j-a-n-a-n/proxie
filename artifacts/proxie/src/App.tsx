@@ -18,6 +18,8 @@ import Courses from "@/pages/courses";
 import CoursePage from "@/pages/course";
 import Progress from "@/pages/progress";
 import { clearQueryCacheOnUserChange } from "@/lib/auth-cache";
+import { ExampleWorkspace } from "@/components/example-workspace";
+import { setRequestUrlMapper } from "@workspace/api-client-react";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: false } },
@@ -33,6 +35,12 @@ const clerkPubKey = publishableKeyFromHost(
 const clerkProxyUrl = import.meta.env.VITE_CLERK_PROXY_URL;
 
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
+setRequestUrlMapper(url => {
+  if (!url.startsWith("/api/")) return url;
+  if (url.startsWith("/api/example/")) return `${basePath}${url}`;
+  const example = window.location.pathname.startsWith(`${basePath}/example/`) || window.location.pathname === `${basePath}/example`;
+  return `${basePath}/api/${example ? "example/" : ""}${url.slice(5)}`;
+});
 
 function stripBase(path: string): string {
   return basePath && path.startsWith(basePath)
@@ -98,7 +106,7 @@ function AuthFrame({ children, note }: { children: ReactNode; note: string }) {
   return (
     <div className="paper-grid flex min-h-[100dvh] flex-col items-center justify-center gap-6 px-4 py-10">
       <Link href="/" data-testid="link-auth-home"><Logo /></Link>
-      {import.meta.env.DEV && <div className="w-full max-w-[440px]"><JudgeDemoButton /></div>}
+      <div className="w-full max-w-[440px]"><JudgeDemoButton /></div>
       {children}
       <p className="hand max-w-xs rotate-[-1deg] text-center text-2xl text-[hsl(var(--ink)/0.7)]">{note}</p>
     </div>
@@ -186,6 +194,7 @@ function ClerkProviderWithRoutes() {
         <ClerkQueryClientCacheInvalidator />
         <TooltipProvider>
           <Switch>
+            <Route path="/example/*?" component={ExampleWorkspace} />
             <Route path="/" component={HomeRedirect} />
             <Route path="/sign-in/*?" component={SignInPage} />
             <Route path="/sign-up/*?" component={SignUpPage} />

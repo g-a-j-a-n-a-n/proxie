@@ -5,6 +5,40 @@ info:
 servers:
   - url: /api
 paths:
+  /example/session:
+    post:
+      operationId: openExampleSession
+      summary: Open or resume an isolated temporary fictional workspace
+      description: Sets an HttpOnly SameSite=Strict cookie scoped to /api/example. No Clerk sign-in, student data, file storage or AI call. Sample reads and safe edits use the existing study response schemas under /example; uploads and generation are forbidden there.
+      responses:
+        "200":
+          description: Existing session resumed
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ExampleSessionStatus" }
+        "201":
+          description: New session created
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ExampleSessionStatus" }
+        "429": { description: Creation limit reached }
+        "503": { description: Temporary example capacity reached }
+    delete:
+      operationId: closeExampleSession
+      responses:
+        "204": { description: Practice session discarded and cookie cleared }
+        "401": { description: No active example session }
+  /example/reset:
+    post:
+      operationId: resetExampleSession
+      summary: Restore only this visitor's fictional sample data
+      responses:
+        "200":
+          description: Sample restored
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ExampleResetStatus" }
+        "401": { description: No active example session }
   /healthz:
     get:
       operationId: healthCheck
@@ -198,6 +232,16 @@ paths:
               schema: { $ref: "#/components/schemas/UploadResult" }
 components:
   schemas:
+    ExampleSessionStatus:
+      type: object
+      required: [active]
+      properties:
+        active: { type: boolean, const: true }
+    ExampleResetStatus:
+      type: object
+      required: [reset]
+      properties:
+        reset: { type: boolean, const: true }
     HealthStatus:
       type: object
       required: [status]

@@ -1,5 +1,6 @@
 import { Link } from "wouter";
 import { useUser } from "@clerk/react";
+import { useExampleWorkspace } from "@/lib/example-mode";
 import { useGetWorkspace } from "@workspace/api-client-react";
 import { ArrowRight, BookOpen, Flame, Network, PenLine, Target } from "lucide-react";
 import { EmptyNote, ErrorState, HandTitle, HonestLabel, PageSkeleton } from "@/components/states";
@@ -7,6 +8,7 @@ import { errMsg, relTime, stepLabel } from "@/lib/proxie";
 import { cn } from "@/lib/utils";
 
 export default function Dashboard() {
+  const isExample = useExampleWorkspace();
   const { user } = useUser();
   const ws = useGetWorkspace();
   if (ws.isLoading) return <PageSkeleton />;
@@ -22,7 +24,7 @@ export default function Dashboard() {
       <div className="flex flex-wrap items-end justify-between gap-4 rise">
         <div>
           <p className="mono text-xs uppercase tracking-[0.18em] text-[hsl(var(--muted-foreground))]">{new Date().toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" })}</p>
-          <HandTitle className="mt-1 text-[52px] md:text-[64px]">{hi}, {user?.firstName ?? "friend"}.</HandTitle>
+          <HandTitle className="mt-1 text-[52px] md:text-[64px]">{hi}, {isExample ? "explorer" : user?.firstName ?? "friend"}.</HandTitle>
         </div>
         <div className="flex gap-3">
           <Link href="/progress" className="flex items-center gap-2 rounded-2xl bg-[hsl(var(--card))] px-4 py-2.5 shadow-sm" data-testid="link-xp">
@@ -146,7 +148,7 @@ export default function Dashboard() {
                 </ul>
               )}
             </section>
-            <HonestLabel><BookOpen className="mr-1 inline h-3 w-3" /> Everything here comes from your own account data.</HonestLabel>
+            <HonestLabel><BookOpen className="mr-1 inline h-3 w-3" /> {isExample ? "Fictional sample data. Your practice changes stay in this temporary session." : "Everything here comes from your own account data."}</HonestLabel>
           </aside>
         </div>
       )}

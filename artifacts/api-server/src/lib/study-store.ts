@@ -3,6 +3,7 @@ import { eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import { GetWorkspaceResponse, GetNotebookResponse, CreateCourseResponse, GetRunResponse, GetQuizResponseItem } from "@workspace/api-zod";
 import type { GenerationUsage } from "./generation-usage";
+import { isExampleId, readExampleState, changeExampleState } from "./example-store";
 
 export type Notebook = z.infer<typeof GetNotebookResponse>;
 export type Course = z.infer<typeof CreateCourseResponse>;
@@ -30,10 +31,12 @@ export function fail(message: string, status = 400): never {
   throw error;
 }
 export async function readState(userId: string): Promise<State> {
+  if (isExampleId(userId)) return readExampleState(userId);
   const [row] = await db.select().from(studentWorkspaces).where(eq(studentWorkspaces.userId, userId));
   return row ? row.data as State : emptyState();
 }
 export async function changeState<T>(userId: string, change: (state: State) => T): Promise<T> {
+  if (isExampleId(userId)) return changeExampleState(userId, change);
   return db.transaction(async (tx) => {
     await tx.insert(studentWorkspaces).values({ userId, data: emptyState() }).onConflictDoNothing();
     const rows = await tx.select().from(studentWorkspaces).where(eq(studentWorkspaces.userId, userId)).for("update");

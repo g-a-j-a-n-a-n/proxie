@@ -17,6 +17,12 @@ const DEFAULT_JSON_ACCEPT = "application/json, application/problem+json";
 
 let _baseUrl: string | null = null;
 let _authTokenGetter: AuthTokenGetter | null = null;
+let _requestUrlMapper: ((url: string) => string) | null = null;
+
+/** Optional same-origin routing adapter; never changes authentication or query keys. */
+export function setRequestUrlMapper(mapper: ((url: string) => string) | null): void {
+  _requestUrlMapper = mapper;
+}
 
 /**
  * Set a base URL that is prepended to every relative request URL
@@ -327,6 +333,10 @@ export async function customFetch<T = unknown>(
   options: CustomFetchOptions = {},
 ): Promise<T> {
   input = applyBaseUrl(input);
+  if (_requestUrlMapper) {
+    const mapped = _requestUrlMapper(resolveUrl(input));
+    input = isRequest(input) ? new Request(mapped, input) : mapped;
+  }
   const { responseType = "auto", headers: headersInit, ...init } = options;
 
   const method = resolveMethod(input, init.method);

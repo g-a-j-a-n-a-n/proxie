@@ -29,6 +29,8 @@ import type {
   Course,
   CourseInput,
   CourseUpdate,
+  ExampleResetStatus,
+  ExampleSessionStatus,
   FlagInput,
   HealthStatus,
   JudgeTicket,
@@ -69,6 +71,223 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   }
   return result;
 };
+
+export const getOpenExampleSessionUrl = () => {
+
+
+
+
+  return `/api/example/session`
+}
+
+/**
+ * Sets an HttpOnly SameSite=Strict cookie scoped to /api/example. No Clerk sign-in, student data, file storage or AI call. Sample reads and safe edits use the existing study response schemas under /example; uploads and generation are forbidden there.
+ * @summary Open or resume an isolated temporary fictional workspace
+ */
+export const openExampleSession = async ( options?: Parameters<typeof customFetch>[1]): Promise<ExampleSessionStatus> => {
+
+  return customFetch<ExampleSessionStatus>(getOpenExampleSessionUrl(),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+
+export const getOpenExampleSessionMutationKey = () => ['openExampleSession'] as const;
+
+export const getOpenExampleSessionMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof openExampleSession>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof openExampleSession>>, TError,void, TContext> => {
+
+const mutationKey = getOpenExampleSessionMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof openExampleSession>>, void> = () => {
+
+
+          return  openExampleSession(requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type OpenExampleSessionMutationResult = NonNullable<Awaited<ReturnType<typeof openExampleSession>>>
+
+    export type OpenExampleSessionMutationError = ErrorType<void>
+
+
+    /**
+ * @summary Open or resume an isolated temporary fictional workspace
+ */
+export const useOpenExampleSession = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof openExampleSession>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof openExampleSession>>,
+        TError,
+        void,
+        TContext
+      > => {
+      return useMutation(getOpenExampleSessionMutationOptions(options), queryClient);
+    }
+
+export const getCloseExampleSessionUrl = () => {
+
+
+
+
+  return `/api/example/session`
+}
+
+export const closeExampleSession = async ( options?: Parameters<typeof customFetch>[1]): Promise<void> => {
+
+  return customFetch<void>(getCloseExampleSessionUrl(),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getCloseExampleSessionMutationKey = () => ['closeExampleSession'] as const;
+
+export const getCloseExampleSessionMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof closeExampleSession>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof closeExampleSession>>, TError,void, TContext> => {
+
+const mutationKey = getCloseExampleSessionMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof closeExampleSession>>, void> = () => {
+
+
+          return  closeExampleSession(requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CloseExampleSessionMutationResult = NonNullable<Awaited<ReturnType<typeof closeExampleSession>>>
+
+    export type CloseExampleSessionMutationError = ErrorType<void>
+
+
+    export const useCloseExampleSession = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof closeExampleSession>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof closeExampleSession>>,
+        TError,
+        void,
+        TContext
+      > => {
+      return useMutation(getCloseExampleSessionMutationOptions(options), queryClient);
+    }
+
+export const getResetExampleSessionUrl = () => {
+
+
+
+
+  return `/api/example/reset`
+}
+
+/**
+ * @summary Restore only this visitor's fictional sample data
+ */
+export const resetExampleSession = async ( options?: Parameters<typeof customFetch>[1]): Promise<ExampleResetStatus> => {
+
+  return customFetch<ExampleResetStatus>(getResetExampleSessionUrl(),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+
+export const getResetExampleSessionMutationKey = () => ['resetExampleSession'] as const;
+
+export const getResetExampleSessionMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof resetExampleSession>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof resetExampleSession>>, TError,void, TContext> => {
+
+const mutationKey = getResetExampleSessionMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof resetExampleSession>>, void> = () => {
+
+
+          return  resetExampleSession(requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ResetExampleSessionMutationResult = NonNullable<Awaited<ReturnType<typeof resetExampleSession>>>
+
+    export type ResetExampleSessionMutationError = ErrorType<void>
+
+
+    /**
+ * @summary Restore only this visitor's fictional sample data
+ */
+export const useResetExampleSession = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof resetExampleSession>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof resetExampleSession>>,
+        TError,
+        void,
+        TContext
+      > => {
+      return useMutation(getResetExampleSessionMutationOptions(options), queryClient);
+    }
 
 export const getHealthCheckUrl = () => {
 

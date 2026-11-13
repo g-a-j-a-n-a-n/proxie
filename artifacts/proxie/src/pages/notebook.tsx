@@ -12,8 +12,10 @@ import { RunDiagram } from "@/components/run-diagram";
 import { EmptyNote, ErrorState, PageSkeleton } from "@/components/states";
 import { useToast } from "@/hooks/use-toast";
 import { errMsg, errStatus, relTime } from "@/lib/proxie";
+import { useExampleWorkspace } from "@/lib/example-mode";
 
 export default function NotebookPage() {
+  const isExample = useExampleWorkspace();
   const { id = "" } = useParams<{ id: string }>();
   const [, setLocation] = useLocation();
   const qc = useQueryClient();
@@ -71,6 +73,10 @@ export default function NotebookPage() {
     });
   };
   const regenerate = (section: Section, flag?: Flag) => {
+    if (isExample) {
+      toast({ title: "AI generation needs a personal account", description: "Try editing or flagging the sample instead. Use Personal account above to work with your own materials." });
+      return;
+    }
     setRegenId(section.id);
     fixM.mutate({ id, sectionId: section.id, data: { action: "regenerate", ...(flag ? { flagId: flag.id } : {}) } }, {
       onSuccess: (u) => { applyNotebook(u); toast({ title: "Section regenerated", description: "Check the new citations." }); },

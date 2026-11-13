@@ -30,7 +30,7 @@ export default function Landing() {
       <header className="mx-auto flex h-20 max-w-6xl items-center px-5">
         <Logo />
         <div className="ml-auto flex items-center gap-2">
-          {import.meta.env.DEV && <Link href="/sign-in" className="ghost-btn !border-transparent" data-testid="link-judge-demo">Judge demo</Link>}
+          <Link href="/example/dashboard" className="ghost-btn !border-transparent text-sm" data-testid="link-example-workspace">Example workspace</Link>
           <Link href="/sign-in" className="ghost-btn !border-transparent" data-testid="link-sign-in">Sign in</Link>
           <Link href="/sign-up" className="ink-btn" data-testid="link-sign-up">Start a notebook</Link>
         </div>

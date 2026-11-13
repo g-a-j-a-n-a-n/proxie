@@ -9,6 +9,7 @@
     "start": "node --enable-source-maps ./dist/index.mjs",
     "test:isolation": "tsx --test src/routes/study.isolation.test.ts",
     "test:security": "tsx --test src/middlewares/requestSecurity.test.ts src/lib/generation-usage.test.ts",
+    "test:example": "NODE_ENV=production tsx --test src/routes/example.test.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {

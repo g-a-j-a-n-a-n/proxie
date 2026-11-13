@@ -16,7 +16,7 @@ Clone the repository, install with `pnpm install --frozen-lockfile`, and read `.
 6. Enable/configure the OpenAI AI integration through Replit if your plan supports it. Review billing first. Keys and base URL are supplied as server-only secrets.
 7. Start the existing API and frontend workflows, then check the public home, signed-out API protection, and an authorized fictional test notebook.
 
-Do not reset the shared judge workspace merely to test setup. It is shared and editable. Judge account initialization/reset routes are development-only and production must use normal student accounts.
+Do not reset the shared judge workspace merely to test setup. It is shared and editable. Legacy judge-account initialization/reset routes remain development-only. Normal student work requires personal accounts; the public [Example workspace](EXAMPLE-WORKSPACE.md) instead gives each anonymous visitor an isolated temporary copy of fictional materials, with no paid generation or uploads.
 
 ## Configuration reference
 

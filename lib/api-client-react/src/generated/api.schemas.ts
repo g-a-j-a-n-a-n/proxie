@@ -4,6 +4,16 @@
  * Api
  * OpenAPI spec version: 0.1.0
  */
+export const ExampleSessionStatusValue = {
+  active: true,
+} as const;
+export type ExampleSessionStatus = typeof ExampleSessionStatusValue;
+
+export const ExampleResetStatusValue = {
+  reset: true,
+} as const;
+export type ExampleResetStatus = typeof ExampleResetStatusValue;
+
 export interface HealthStatus {
   status: string;
 }
