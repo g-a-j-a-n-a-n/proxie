@@ -1,0 +1,16 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "mm9xCYIFBA7LAGehZjRer"
+uri = "file://docs/images/how-it-works-real-run.png"
+type = "image"
+title = "How it works — real CSE 421 lecture run"
+description = "Actual 22-second PDF run with 11 recorded steps, including a recovered extractive fallback and 42 matched citations. Added to the README; no lecture content or account identity is shown."
+logical_id = "588280e5-5877-4816-9aa3-81d34b15aea4"
+content_hash = "sha256:5f0e10be5c7904cd10a2717740ea5c67a396fb8f96c49371fb0d7d6fff812ac8"
+size = 442060
+mtime_ms = 1794550976803
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:d2b167e2-678c-4dab-a8bb-dd9e725278da/588280e5-5877-4816-9aa3-81d34b15aea4/868e5a33-111a-4eab-ba9b-65016ac1f873"
+storage_version_token = "1794551026774178"
+content_type = "image/png"

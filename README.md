@@ -14,6 +14,16 @@ Proxie turns lecture materials a student is allowed to use into a private, sourc
 
 **Accuracy boundary:** matching a quotation proves that the quotation appears in the source, not that the AI's interpretation is correct. Students must check citations. Direct edits keep original source references and are explicitly not AI-verified.
 
+## How it works — a real run
+
+The screenshot below shows the recorded processing steps from a real upload of the supplied **CSE 421 Lecture 17: The max flow and min cut problems** PDF, not simulated progress or seeded demo events.
+
+The 38-page lecture completed in approximately **22 seconds**, with **11 recorded steps**. Three source groups received AI summaries; one group used the explicitly labeled **extractive fallback**. The citation check matched **42 citations** and dropped **5 malformed or unmatched items**. These checks verify source-quote matches, not the correctness of every interpretation.
+
+![How it works diagram after a real CSE 421 lecture upload, showing extraction, AI summaries, a recovered extractive fallback, citation checks, and notebook saving.](docs/images/how-it-works-real-run.png)
+
+Only the processing diagram is included here. The lecture PDF, generated lecture notes, account identity, and credentials are not included in this screenshot or documentation addition. Timings and outcomes are specific to this run.
+
 ## Getting started
 
 This is a **pnpm monorepo**, not a static-only website. Use Node.js 24 and pnpm 10.26.1.
